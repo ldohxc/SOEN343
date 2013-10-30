@@ -249,30 +249,13 @@ public class Ezim
 	private static void setLocalNiAddress()
 	{
 		EzimConf ecTmp = EzimConf.getInstance();
-		String strLclNi = ecTmp.settings.getProperty
-		(
-			EzimConf.ezimLocalni
-		);
+		
 		String strLclAdr = ecTmp.settings.getProperty
 		(
 			EzimConf.ezimLocaladdress
 		);
 
-		if (strLclNi != null && strLclNi.length() > 0)
-		{
-			for(NetworkInterface niTmp: Ezim.nifs.keySet())
-				if (strLclNi.equals(niTmp.getName()))
-					Ezim.localNI = niTmp;
-
-			if (null == Ezim.localNI)
-			{
-				EzimLogger.getInstance().warning
-				(
-					"Invalid network interface setting \"" + strLclNi
-						+ "\"."
-				);
-			}
-		}
+		
 
 		if
 		(
