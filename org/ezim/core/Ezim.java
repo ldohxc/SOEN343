@@ -316,26 +316,7 @@ public class Ezim
 			);
 		}
 		
-		if (Ezim.localAddress == null)
-		{
-			// try to pick an IPv6 non-loopback and non-link-locale address
-			for(List<InetAddress> lTmp: cTmp)
-			{
-				for(InetAddress iaTmp: lTmp)
-				{
-					if
-					(
-						iaTmp instanceof Inet6Address
-						&& ! iaTmp.isLoopbackAddress()
-						&& ! iaTmp.isLinkLocalAddress()
-					)
-					{
-						Ezim.localAddress = iaTmp;
-						break;
-					}
-				}
-			}
-		}
+		checkInet(cTmp);
 
 		// try to pick a non-loopback and non-link-locale address
 		if (Ezim.localAddress == null)
@@ -414,6 +395,43 @@ public class Ezim
 		{
 			Ezim.localAddress = Ezim.nifs.elements().nextElement().get(0);
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	private static void checkInet(Collection<List<InetAddress>> cTmp){
+		if (Ezim.localAddress == null)
+		{
+			// try to pick an IPv6 non-loopback and non-link-locale address
+			for(List<InetAddress> lTmp: cTmp)
+			{
+				for(InetAddress iaTmp: lTmp)
+				{
+					boolean b = setInet(iaTmp);
+					if(b){
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * set local network interface
+	 */
+	private static boolean setInet(InetAddress iaTmp){
+		if
+		(
+			iaTmp instanceof Inet6Address
+			&& ! iaTmp.isLoopbackAddress()
+			&& ! iaTmp.isLinkLocalAddress()
+		)
+		{
+			Ezim.localAddress = iaTmp;
+			return true;
+		}
+		return false;
 	}
 	
 	/**
