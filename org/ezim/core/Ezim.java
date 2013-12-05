@@ -395,10 +395,7 @@ public class Ezim
 			Ezim.localAddress = Ezim.nifs.elements().nextElement().get(0);
 		}
 
-		if (null == Ezim.localNI)
-			for(NetworkInterface niTmp: Ezim.nifs.keySet())
-				if (Ezim.nifs.get(niTmp).contains(Ezim.localAddress))
-					Ezim.localNI = niTmp;
+		setLocalNi();
 
 		ecTmp.settings.setProperty
 		(
@@ -411,6 +408,16 @@ public class Ezim
 			EzimConf.ezimLocaladdress
 			, Ezim.localAddress.getHostAddress()
 		);
+	}
+	
+	/**
+	 * set local network interface
+	 */
+	private static void setLocalNi(){
+		if (null == Ezim.localNI)
+			for(NetworkInterface niTmp: Ezim.nifs.keySet())
+				if (Ezim.nifs.get(niTmp).contains(Ezim.localAddress))
+					Ezim.localNI = niTmp;
 	}
 
 	/**
