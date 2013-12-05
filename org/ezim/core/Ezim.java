@@ -255,8 +255,6 @@ public class Ezim
 			EzimConf.ezimLocaladdress
 		);
 
-		
-
 		if
 		(
 			strLclAdr != null && strLclAdr.length() > 0
@@ -279,6 +277,28 @@ public class Ezim
 			}
 		}
 
+		setLocalAddress();
+
+		setLocalNi();
+
+		ecTmp.settings.setProperty
+		(
+			EzimConf.ezimLocalni
+			, Ezim.localNI.getName()
+		);
+
+		ecTmp.settings.setProperty
+		(
+			EzimConf.ezimLocaladdress
+			, Ezim.localAddress.getHostAddress()
+		);
+	}
+	
+	/**
+	 * set local network interface and address
+	 */
+	private static void setLocalAddress()
+	{
 		// confine our selectable network interfaces
 		Collection<List<InetAddress>> cTmp = null;
 
@@ -295,7 +315,7 @@ public class Ezim
 				Ezim.nifs.get(Ezim.localNI)
 			);
 		}
-
+		
 		if (Ezim.localAddress == null)
 		{
 			// try to pick an IPv6 non-loopback and non-link-locale address
@@ -394,20 +414,6 @@ public class Ezim
 		{
 			Ezim.localAddress = Ezim.nifs.elements().nextElement().get(0);
 		}
-
-		setLocalNi();
-
-		ecTmp.settings.setProperty
-		(
-			EzimConf.ezimLocalni
-			, Ezim.localNI.getName()
-		);
-
-		ecTmp.settings.setProperty
-		(
-			EzimConf.ezimLocaladdress
-			, Ezim.localAddress.getHostAddress()
-		);
 	}
 	
 	/**
