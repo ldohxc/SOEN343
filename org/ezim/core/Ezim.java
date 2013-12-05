@@ -315,80 +315,16 @@ public class Ezim
 				Ezim.nifs.get(Ezim.localNI)
 			);
 		}
-		
-		checkInet(cTmp);
-
+		// try to pick an IPv6 non-loopback and non-link-locale address
+		checkInet(cTmp, Inet6Address.class, "h");
 		// try to pick a non-loopback and non-link-locale address
-		if (Ezim.localAddress == null)
-		{
-			for(List<InetAddress> lTmp: cTmp)
-			{
-				for(InetAddress iaTmp: lTmp)
-				{
-					if
-					(
-						! iaTmp.isLoopbackAddress()
-						&& ! iaTmp.isLinkLocalAddress()
-					)
-					{
-						Ezim.localAddress = iaTmp;
-						break;
-					}
-				}
-			}
-		}
-
+		checkInet(cTmp, InetAddress.class, "h");
 		// try to pick an IPv6 non-loopback address
-		if (Ezim.localAddress == null)
-		{
-			for(List<InetAddress> lTmp: cTmp)
-			{
-				for(InetAddress iaTmp: lTmp)
-				{
-					if
-					(
-						iaTmp instanceof Inet6Address
-						&& ! iaTmp.isLoopbackAddress()
-					)
-					{
-						Ezim.localAddress = iaTmp;
-						break;
-					}
-				}
-			}
-		}
-
+		checkInet(cTmp, Inet6Address.class, "m");
 		// try to pick a non-loopback address
-		if (Ezim.localAddress == null)
-		{
-			for(List<InetAddress> lTmp: cTmp)
-			{
-				for(InetAddress iaTmp: lTmp)
-				{
-					if (! iaTmp.isLoopbackAddress())
-					{
-						Ezim.localAddress = iaTmp;
-						break;
-					}
-				}
-			}
-		}
-
+		checkInet(cTmp, InetAddress.class, "m");
 		// try to pick an IPv6 address
-		if (Ezim.localAddress == null)
-		{
-			for(List<InetAddress> lTmp: cTmp)
-			{
-				for(InetAddress iaTmp: lTmp)
-				{
-					if (iaTmp instanceof Inet6Address)
-					{
-						Ezim.localAddress = iaTmp;
-						break;
-					}
-				}
-			}
-		}
+		checkInet(cTmp, Inet6Address.class, "l");
 
 		// pick the first available address when all failed
 		if (Ezim.localAddress == null)
@@ -400,15 +336,14 @@ public class Ezim
 	/**
 	 * 
 	 */
-	private static void checkInet(Collection<List<InetAddress>> cTmp){
+	private static void checkInet(Collection<List<InetAddress>> cTmp, Class c, String level){
 		if (Ezim.localAddress == null)
 		{
-			// try to pick an IPv6 non-loopback and non-link-locale address
 			for(List<InetAddress> lTmp: cTmp)
 			{
 				for(InetAddress iaTmp: lTmp)
 				{
-					boolean b = setInet(iaTmp);
+					boolean b = setInet(iaTmp, c, level);
 					if(b){
 						break;
 					}
@@ -418,20 +353,40 @@ public class Ezim
 	}
 	
 	/**
-	 * set local network interface
+	 * set local network interface  
 	 */
-	private static boolean setInet(InetAddress iaTmp){
-		if
-		(
-			iaTmp instanceof Inet6Address
-			&& ! iaTmp.isLoopbackAddress()
-			&& ! iaTmp.isLinkLocalAddress()
-		)
-		{
-			Ezim.localAddress = iaTmp;
-			return true;
+	private static boolean setInet(InetAddress iaTmp, Class c, String level){
+		if(level.equals("h")){
+			if
+			(
+				iaTmp.getClass().getName().equals(c.getName())
+				&& ! iaTmp.isLoopbackAddress()
+				&& ! iaTmp.isLinkLocalAddress()
+			)
+			{
+				Ezim.localAddress = iaTmp;
+				return true;
+			}
+			return false;
+		}else if(level.equals("m")){
+			if
+			(
+				iaTmp.getClass().getName().equals(c.getName())
+				&& ! iaTmp.isLoopbackAddress()
+			)
+			{
+				Ezim.localAddress = iaTmp;
+				return true;
+			}
+			return false;
+		}else{
+			if (iaTmp.getClass().getName().equals(c.getName()))
+			{
+				Ezim.localAddress = iaTmp;
+				return true;
+			}
+			return false;
 		}
-		return false;
 	}
 	
 	/**
