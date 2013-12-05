@@ -246,7 +246,7 @@ public class Ezim
 	/**
 	 * set local network interface and address
 	 */
-	private static void setLocalNiAddress()
+	private static void setLocalConf()
 	{
 		EzimConf ecTmp = EzimConf.getInstance();
 		
@@ -583,7 +583,7 @@ public class Ezim
 	private static void initNetConf()
 	{
 		Ezim.scanNetworkInterfaces();
-		Ezim.setLocalNiAddress();
+		Ezim.setLocalConf();
 		Ezim.setMcGroup();
 		Ezim.setOperatingNI();
 		Ezim.setLocalDtxPort();
